@@ -1,9 +1,9 @@
-// import { isJsonData } from '../../../../lib/is-json-data.js';
+import { isJsonData } from '../utils/is-json-data.js';
 
 export const create = (key, value) => {
-  // if (!isJsonData(value)) {
-  //   throw new TypeError('cannot update: new value is not JSON-friendly');
-  // }
+  if (!isJsonData(value)) {
+    throw new TypeError('cannot update: new value is not JSON-friendly');
+  }
 
   if (key in localStorage) {
     throw new ReferenceError(`cannot create: key "${key}" already exists`);

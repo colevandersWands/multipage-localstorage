@@ -1,9 +1,9 @@
-// import { isJsonData } from '../../../../lib/is-json-data.js';
+import { isJsonData } from '../utils/is-json-data.js';
 
 export const update = (key, newValue) => {
-  // if (!isJsonData(newValue)) {
-  //   throw new TypeError('cannot update: new value is not JSON-friendly');
-  // }
+  if (!isJsonData(newValue)) {
+    throw new TypeError('cannot update: new value is not JSON-friendly');
+  }
 
   if (key in localStorage) {
     localStorage.setItem(key, JSON.stringify(newValue));
