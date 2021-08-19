@@ -14,7 +14,11 @@ const passedPath = process.argv[2];
 
 const ROOT = path.join(__dirname, '..', passedPath || '');
 
-const CRUISABLE_PATH_NAMES = ['src'];
+const CRUISABLE_PATH_NAMES = [
+  // 'isolate',
+  // 'presentation',
+  'src',
+];
 const IGNORABLE_PATHS = ['.git', 'node_modules'];
 
 if (!fs.existsSync(ROOT)) {
@@ -51,7 +55,7 @@ findCruisablePaths(ROOT)
       path,
       graph: cruise([path], {
         outputType: 'dot',
-        doNotFollow: { path: ['node_modules', 'lib'] },
+        doNotFollow: { path: ['node_modules', 'lib', 'data-access'] },
         reporterOptions: {
           dot: { collapsePattern: '^((node_modules|lib)/[^/]+)' },
         },
@@ -65,6 +69,7 @@ findCruisablePaths(ROOT)
         .then((svgGraph) =>
           fs.writeFile(
             path.join(project.path, '..', 'dependency-graph.svg'),
+            // path.join(project.path, 'dependency-graph.svg'),
             svgGraph,
             'utf-8',
             (err) => err && console.err(err),
