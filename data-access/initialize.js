@@ -34,7 +34,7 @@ only these types are allowed:
     .map((key) => ({ [key]: JSON.parse(localStorage.getItem(key)) }))
     .reduce((next, all) => ({ ...all, ...next }), {});
 
-  console.groupCollapsed(`: initialize:`, state);
-  console.trace();
+  console.groupCollapsed(`: initialize:`, data);
+  console.trace('new state:', state);
   console.groupEnd();
 };

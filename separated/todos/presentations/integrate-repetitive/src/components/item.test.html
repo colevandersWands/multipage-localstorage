@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title></title>
+
+    <link href="../../styles/footer.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <script type="module">
+      import { showComponentTestCase } from '/lib/show-component-test-case.js';
+
+      import { itemComponent } from './item.js';
+
+      const test1El = showComponentTestCase('test 1', itemComponent, {
+        id: 1,
+        task: 'asfd',
+        done: true,
+      });
+      test1El.addEventListener('delete', (event) => console.log(event));
+      test1El.addEventListener('update', (event) => console.log(event));
+
+      const test2El = showComponentTestCase('test 2', itemComponent, {
+        id: 5,
+        task: ' - - - ',
+        done: false,
+      });
+      test2El.addEventListener('delete', (event) => console.log(event));
+      test2El.addEventListener('update', (event) => console.log(event));
+    </script>
+  </body>
+</html>

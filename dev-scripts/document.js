@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+// import { exec } from 'child_process';
 
 import dependencyCruiser from 'dependency-cruiser';
 const { cruise } = dependencyCruiser;
@@ -9,6 +10,13 @@ import graphvizCLI from 'graphviz-cli';
 const { renderGraphFromSource } = graphvizCLI;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const cruiserOptions = JSON.parse(
+  fs.readFileSync(
+    path.join(__dirname, '..', '.dependency-cruiser.json'),
+    'utf-8',
+  ),
+);
 
 const passedPath = process.argv[2];
 
@@ -50,32 +58,38 @@ const findCruisablePaths = async (dirPath) => {
 
 findCruisablePaths(ROOT)
   .then((unflatPaths) => unflatPaths.flat(Infinity))
-  .then((paths) => {
+  .then(async (paths) => {
     const cruised = paths.map((path) => ({
       path,
-      graph: cruise([path], {
-        outputType: 'dot',
-        doNotFollow: { path: ['node_modules', 'lib', 'data-access'] },
-        reporterOptions: {
-          dot: { collapsePattern: '^((node_modules|lib)/[^/]+)' },
-        },
-        exclude: '(sandbox.js|(\\S)+.spec.js|dev-scripts|dev.js)',
-      }).output,
+      graph: cruise([path], cruiserOptions).output,
     }));
 
     for (const project of cruised) {
       console.log(project.path);
+
       renderGraphFromSource({ input: project.graph }, { format: 'svg' })
-        .then((svgGraph) =>
+        .then((svgGraph) => {
+          const graphBasePath = path.join(
+            project.path,
+            '..',
+            'dependency-graph',
+          );
           fs.writeFile(
-            path.join(project.path, '..', 'dependency-graph.svg'),
-            // path.join(project.path, 'dependency-graph.svg'),
+            `${graphBasePath}.svg`,
             svgGraph,
             'utf-8',
-            (err) => err && console.err(err),
-          ),
-        )
+            (err) => err && console.error(err),
+          );
+        })
         .catch((err) => console.error(err));
     }
+
+    // await import(
+    //   '../node_modules/dependency-cruiser/bin/wrap-stream-in-html.js'
+    // );
+
+    // for (const path of paths) {
+    //   console.log(path);
+    // }
   })
   .catch((err) => console.error(err));

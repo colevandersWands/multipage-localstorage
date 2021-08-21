@@ -4,7 +4,6 @@ export const update = (key = '', newValue) => {
   if (!isJsonData(newValue)) {
     throw new TypeError(`cannot update: new value is not JSON data.
 
-
 only these types are allowed:
 - string
 - number
